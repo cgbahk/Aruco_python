@@ -1,13 +1,16 @@
 import pygame
 from OpenGL.GL import *
 
+
 def MTL(filename):
     contents = {}
     mtl = None
     for line in open(filename, "r"):
-        if line.startswith('#'): continue
+        if line.startswith('#'):
+            continue
         values = line.split()
-        if not values: continue
+        if not values:
+            continue
         if values[0] == 'newmtl':
             mtl = contents[values[1]] = {}
         elif mtl is None:
@@ -21,14 +24,15 @@ def MTL(filename):
             texid = mtl['texture_Kd'] = glGenTextures(1)
             glBindTexture(GL_TEXTURE_2D, texid)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                GL_LINEAR)
+                            GL_LINEAR)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                GL_LINEAR)
+                            GL_LINEAR)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA,
-                GL_UNSIGNED_BYTE, image)
+                         GL_UNSIGNED_BYTE, image)
         else:
             mtl[values[0]] = list(map(float, values[1:]))
     return contents
+
 
 class OBJ:
     def __init__(self, filename, swapyz=False):
@@ -40,9 +44,11 @@ class OBJ:
 
         material = None
         for line in open(filename, "r"):
-            if line.startswith('#'): continue
+            if line.startswith('#'):
+                continue
             values = line.split()
-            if not values: continue
+            if not values:
+                continue
             if values[0] == 'v':
                 v = list(map(float, values[1:4]))
                 if swapyz:
@@ -92,7 +98,7 @@ class OBJ:
                 glColor(*mtl['Kd'])
 
             glBegin(GL_POLYGON)
-            
+
             for i in range(len(vertices)):
                 if normals[i] > 0:
                     glNormal3fv(self.normals[normals[i] - 1])
